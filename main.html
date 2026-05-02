@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="pt-BR" class="h-full">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard Administrativo</title>
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
+  <script src="/_sdk/element_sdk.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/main.css">
+ </head>
+ <body class="h-full overflow-hidden bg-gray-100">
+  <div id="app" class="h-full flex">
+   <aside id="sidebar" class="sidebar-gradient hidden md:flex flex-col items-center py-6 w-16 flex-shrink-0">
+    <div class="mb-8">
+     <div class="w-9 h-9 rounded-full bg-white/20 flex items-center justify-center">
+      <i data-lucide="layout-dashboard" class="w-5 h-5 text-white"></i>
+     </div>
+    </div>
+    <nav class="flex flex-col gap-3 flex-1"><button class="nav-btn active p-3 text-white" data-page="inicio" onclick="navigate('inicio')"><i data-lucide="home" class="w-5 h-5"></i><span class="tooltip">Início</span></button> <button class="nav-btn p-3 text-white/70 hover:text-white" data-page="funcionario" onclick="navigate('funcionario')"><i data-lucide="users" class="w-5 h-5"></i><span class="tooltip">Funcionário</span></button>
+     <div class="nav-btn p-3 text-white/70 hover:text-white relative cursor-pointer" data-page="relatorios">
+      <i data-lucide="file-text" class="w-5 h-5"></i><span class="tooltip">Relatórios</span>
+      <div class="submenu"><button onclick="navigate('rel-funcionarios')" class="block w-full text-left px-4 py-2 text-sm text-white/80 hover:bg-white/10">Relatório de Funcionários</button> <button onclick="navigate('rel-gerais')" class="block w-full text-left px-4 py-2 text-sm text-white/80 hover:bg-white/10">Relatórios Gerais</button> <button onclick="navigate('rel-nao-recad')" class="block w-full text-left px-4 py-2 text-sm text-white/80 hover:bg-white/10">Servidores não recadastrados</button> <button onclick="navigate('rel-log')" class="block w-full text-left px-4 py-2 text-sm text-white/80 hover:bg-white/10">Log de alterações</button>
+      </div>
+     </div><button class="nav-btn p-3 text-white/70 hover:text-white" data-page="config" onclick="navigate('config')"><i data-lucide="settings" class="w-5 h-5"></i><span class="tooltip">Configurações</span></button>
+    </nav>
+   </aside>
+   <div class="flex-1 flex flex-col h-full overflow-hidden">
+    <header class="top-bar bg-white shadow-sm px-4 md:px-6 py-3 flex items-center justify-between flex-shrink-0">
+     <div class="flex items-center gap-3"><button class="md:hidden p-2" onclick="toggleMobileMenu()"><i data-lucide="menu" class="w-5 h-5 text-gray-600"></i></button>
+      <div class="relative hidden sm:block">
+       <i data-lucide="search" class="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i><input type="text" placeholder="Pesquisar..." class="pl-9 pr-4 py-2 bg-gray-100 rounded-lg text-sm w-48 md:w-64 focus:outline-none focus:ring-2 focus:ring-blue-300">
+      </div>
+     </div>
+     <div class="flex items-center gap-3"><button onclick="toggleDark()" class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-white/10"><i data-lucide="moon" class="w-5 h-5 text-gray-500 dark:text-gray-300" id="darkIcon"></i></button>
+      <div class="relative group"><button class="p-2 rounded-lg hover:bg-gray-100 relative"><i data-lucide="graduation-cap" class="w-5 h-5 text-gray-500"></i><span id="notificationBadge" class="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full hidden"></span></button>
+       <div id="notificationPanel" class="hidden absolute right-0 top-full mt-2 w-80 bg-white border border-gray-200 rounded-lg shadow-lg z-50 max-h-96 flex flex-col overflow-hidden group-hover:block">
+        <div class="px-4 py-3 border-b border-gray-200 flex items-center justify-between bg-gray-50">
+         <p class="font-semibold text-gray-800 text-sm">Notificações</p><button onclick="clearAllNotifications()" class="text-xs text-blue-600 hover:text-blue-700 font-medium">Limpar tudo</button>
+        </div>
+        <div id="notificationList" class="flex-1 overflow-y-auto">
+         <div class="px-4 py-6 text-center text-gray-400 text-sm">
+          Nenhuma notificação
+         </div>
+        </div>
+       </div>
+      </div>
+      <div class="flex items-center gap-2 relative group">
+       <button onclick="toggleUserPanel()" class="flex items-center gap-2 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-white/10 transition">
+        <div class="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white text-xs font-bold overflow-hidden" id="userAvatar">
+         <img id="userAvatarImg" src="" style="display:none; width:100%; height:100%; object-fit:cover;"> <span id="userAvatarText">U</span>
+        </div><span class="hidden md:inline text-sm font-medium text-gray-700 dark:text-gray-300">Usuário</span> </button>
+       <div id="userPanel" class="hidden absolute right-0 top-full mt-2 w-80 bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-lg shadow-lg z-50">
+        <div class="px-4 py-4 border-b border-gray-200 dark:border-slate-700">
+         <div class="flex items-center gap-3 mb-3">
+          <div class="w-12 h-12 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white text-sm font-bold overflow-hidden" id="userPanelAvatar">
+           <img id="userPanelAvatarImg" src="" style="display:none; width:100%; height:100%; object-fit:cover;"> <span id="userPanelAvatarText">U</span>
+          </div>
+          <div>
+           <p class="font-semibold text-gray-800 dark:text-white text-sm" id="userFullName">Usuário Padrão</p>
+           <p class="text-xs text-gray-500 dark:text-gray-400">Administrador</p>
+          </div>
+         </div>
+        </div>
+        <div class="px-4 py-3 border-b border-gray-200 dark:border-slate-700">
+         <button onclick="goToUserProfile()" class="w-full text-left px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-slate-700 transition text-sm text-gray-700 dark:text-gray-300 flex items-center gap-2"> <i data-lucide="user" class="w-4 h-4"></i> Meu Perfil </button> <button onclick="navigate('config')" class="w-full text-left px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-slate-700 transition text-sm text-gray-700 dark:text-gray-300 flex items-center gap-2 mt-2"> <i data-lucide="settings" class="w-4 h-4"></i> Configurações </button>
+        </div>
+        <div class="px-4 py-3">
+         <button onclick="logoutUser()" class="w-full text-left px-3 py-2 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20 transition text-sm text-red-600 dark:text-red-400 flex items-center gap-2"> <i data-lucide="log-out" class="w-4 h-4"></i> Sair </button>
+        </div>
+       </div>
+      </div>
+     </div>
+    </header>
+    <div id="mobileMenu" class="fixed inset-0 z-50 hidden">
+     <div class="absolute inset-0 bg-black/50" onclick="toggleMobileMenu()"></div>
+     <div class="sidebar-gradient absolute left-0 top-0 h-full w-64 flex flex-col overflow-y-auto">
+      <div class="p-4 border-b border-white/20 flex items-center justify-between">
+       <h3 class="text-white font-semibold text-lg">Menu</h3><button onclick="toggleMobileMenu()" class="text-white hover:bg-white/10 p-2 rounded-lg transition"><i data-lucide="x" class="w-5 h-5"></i></button>
+      </div>
+      <nav class="flex-1 p-4 flex flex-col gap-1">
+       <button class="mobile-nav-btn text-white text-left py-3 px-4 rounded-xl hover:bg-white/15 transition flex items-center gap-3 font-medium" data-page="inicio" onclick="navigate('inicio');toggleMobileMenu()"><i data-lucide="home" class="w-5 h-5"></i><span>Início</span></button> <button class="mobile-nav-btn text-white text-left py-3 px-4 rounded-xl hover:bg-white/15 transition flex items-center gap-3 font-medium" data-page="funcionario" onclick="navigate('funcionario');toggleMobileMenu()"><i data-lucide="users" class="w-5 h-5"></i><span>Funcionário</span></button>
+       <div class="pt-2 border-t border-white/20 mt-2">
+        <p class="text-white/60 text-xs font-semibold px-4 py-2 uppercase">Relatórios</p><button class="mobile-nav-btn text-white text-left py-2 px-4 rounded-xl hover:bg-white/15 transition flex items-center gap-3 text-sm" onclick="navigate('rel-funcionarios');toggleMobileMenu()"><i data-lucide="file-text" class="w-4 h-4"></i><span>Rel. Funcionários</span></button> <button class="mobile-nav-btn text-white text-left py-2 px-4 rounded-xl hover:bg-white/15 transition flex items-center gap-3 text-sm" onclick="navigate('rel-gerais');toggleMobileMenu()"><i data-lucide="file-text" class="w-4 h-4"></i><span>Rel. Gerais</span></button> <button class="mobile-nav-btn text-white text-left py-2 px-4 rounded-xl hover:bg-white/15 transition flex items-center gap-3 text-sm" onclick="navigate('rel-nao-recad');toggleMobileMenu()"><i data-lucide="file-text" class="w-4 h-4"></i><span>Não Recadastrados</span></button> <button class="mobile-nav-btn text-white text-left py-2 px-4 rounded-xl hover:bg-white/15 transition flex items-center gap-3 text-sm" onclick="navigate('rel-log');toggleMobileMenu()"><i data-lucide="file-text" class="w-4 h-4"></i><span>Log de Alterações</span></button>
+       </div><button class="mobile-nav-btn text-white text-left py-3 px-4 rounded-xl hover:bg-white/15 transition flex items-center gap-3 font-medium mt-2" data-page="config" onclick="navigate('config');toggleMobileMenu()"><i data-lucide="settings" class="w-5 h-5"></i><span>Configurações</span></button>
+      </nav>
+     </div>
+    </div>
+    <main class="center-content flex-1 overflow-auto p-4 md:p-6 bg-white" id="content"></main>
+   </div>
+  </div>
+  <script src="/_sdk/data_sdk.js"></script>
+  <script src="js/render.js"></script>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9f57355477553f2d',t:'MTc3NzcyNjgyMC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
