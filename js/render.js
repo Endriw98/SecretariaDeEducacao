@@ -10,6 +10,7 @@ window.addEventListener('DOMContentLoaded', () => {
   initNotifications();
   navigate('inicio'); 
   lucide.createIcons();
+  showNotification('Bem-vindo!', 'Você entrou no sistema com sucesso.', 'success', 3000);
 });
 function initNotifications() {
   if (!document.getElementById('notifications-container')) {
@@ -1083,6 +1084,7 @@ function saveProfile() {
 function logoutUser() {
   document.getElementById('userPanel').classList.add('hidden');
   showNotification('Até logo!', 'Você saiu do sistema', 'info', 2000);
+  window.location.href = 'index.html'; // Redirecionar para página de login
 }
 
 function applyTheme(primaryColor, accentColor) {
