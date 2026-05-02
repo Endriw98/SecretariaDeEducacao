@@ -6,10 +6,6 @@ btnNotification.addEventListener('click', () => {
   if (panel) panel.classList.toggle('hidden');
 });
 
-
-
-
-
 window.addEventListener('DOMContentLoaded', () => {
   initNotifications();
   navigate('inicio'); 
@@ -1011,7 +1007,6 @@ function removeFuncionarios(schoolIndex) {
 }
 
 function toggleUserPanel() {
-  const panel = document.getElementById('userPanel');
   panel.classList.toggle('hidden');
 }
 
