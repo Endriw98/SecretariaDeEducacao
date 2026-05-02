@@ -152,26 +152,7 @@ function getConfig() {
   return window.elementSdk?.config || defaultConfig;
 }
 
-window.elementSdk.init({
-  defaultConfig,
-  onConfigChange: async (config) => {
-    document.querySelectorAll('.center-content').forEach(el => el.style.backgroundColor = config.background_color || defaultConfig.background_color);
-    renderPage();
-  },
-  mapToCapabilities: (config) => ({
-    recolorables: [
-      { get: () => config.background_color || defaultConfig.background_color, set: (v) => { config.background_color = v; window.elementSdk.setConfig({ background_color: v }); } },
-      { get: () => config.text_color || defaultConfig.text_color, set: (v) => { config.text_color = v; window.elementSdk.setConfig({ text_color: v }); } },
-      { get: () => config.primary_action_color || defaultConfig.primary_action_color, set: (v) => { config.primary_action_color = v; window.elementSdk.setConfig({ primary_action_color: v }); } }
-    ],
-    borderables: [],
-    fontEditable: undefined,
-    fontSizeable: undefined
-  }),
-  mapToEditPanelValues: (config) => new Map([
-    ["dashboard_title", config.dashboard_title || defaultConfig.dashboard_title]
-  ])
-});
+
 
 function toggleDark() {
   darkMode = !darkMode;
