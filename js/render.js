@@ -468,18 +468,17 @@ function renderFuncDesligados() {
         <div class="bg-white border border-gray-200 rounded-xl shadow-sm p-4 mb-4">
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-3">
             <div>
-              <label class="block text-xs font-medium text-gray-600 mb-1">Data de Desligamento</label>
-              <input type="date" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-300">
-            </div>
-            <div>
-              <label class="block text-xs font-medium text-gray-600 mb-1">Motivo</label>
+              <label class="block text-xs font-medium text-gray-600 mb-1">Filtrar por Lotação</label>
               <select class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-300">
                 <option>Todos</option>
-                <option>Aposentadoria</option>
-                <option>Pedido de Demissão</option>
-                <option>Demissão</option>
-                <option>Exoneração</option>
+                <option>Educação</option>
+                <option>Saúde</option>
+                <option>Administração</option>
               </select>
+            </div>
+            <div>
+              <label class="block text-xs font-medium text-gray-600 mb-1">Buscar por Nome, CPF ou Matrícula</label>
+              <input type="text" placeholder="Digite para buscar..." class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-300 pl-8">
             </div>
           </div>
           <button class="w-full bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-700">Filtrar</button>
@@ -491,8 +490,10 @@ function renderFuncDesligados() {
                 <tr>
                   <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700">Nome</th>
                   <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700">Matrícula</th>
+                  <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700">CPF</th>
+                  <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700">Lotação</th>
                   <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700">Data Desligamento</th>
-                  <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700">Motivo</th>
+                  <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700">Ações</th>
                 </tr>
               </thead>
               <tbody>
@@ -528,26 +529,19 @@ function renderRecadastramento() {
         </div>
         <div class="bg-white border border-gray-200 rounded-xl shadow-sm p-4 mb-4">
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-3">
-            <div>
-              <label class="block text-xs font-medium text-gray-600 mb-1">Status</label>
+            <div>    
+              <label class="block text-xs font-medium text-gray-600 mb-1">Lotação</label>
               <select class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-300">
                 <option>Todos</option>
-                <option>Pendente</option>
-                <option>Recadastrado</option>
-                <option>Vencido</option>
               </select>
             </div>
             <div>
-              <label class="block text-xs font-medium text-gray-600 mb-1">Período</label>
-              <select class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-300">
-                <option>Este Mês</option>
-                <option>Últimos 3 Meses</option>
-                <option>Últimos 6 Meses</option>
-                <option>Este Ano</option>
-              </select>
+              <label class="block text-xs font-medium text-gray-600 mb-1">Buscar por Nome, CPF ou Matrícula</label>
+              <input type="text" placeholder="Digite para buscar..." class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-300 pl-8">
             </div>
           </div>
           <button class="w-full bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-700">Filtrar</button>
+          <button class="w-full mt-2 border border-green-600 text-green-600 px-4 py-2 rounded-lg text-sm font-medium hover:bg-green-600 hover:text-white">Limpar Filtros</button>
         </div>
         <div class="bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden">
           <div class="overflow-x-auto">
@@ -555,8 +549,11 @@ function renderRecadastramento() {
               <thead class="bg-gray-50 border-b border-gray-200">
                 <tr>
                   <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700">Nome</th>
-                  <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700">Status</th>
-                  <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700">Próximo Vencimento</th>
+                  <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700">Matrícula</th>
+                  <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700">Lotação Atual</th>
+                  <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700">Cargo</th>
+                  <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700">Último Recadastramento</th>
+                  <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700">Ação</th>
                 </tr>
               </thead>
               <tbody>
