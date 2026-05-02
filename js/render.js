@@ -147,12 +147,6 @@ const defaultConfig = {
   primary_action_color: '#2563eb'
 };
 
-function getConfig() {
-  return window.elementSdk?.config || defaultConfig;
-}
-
-
-
 function toggleDark() {
   darkMode = !darkMode;
   document.documentElement.classList.toggle('dark', darkMode);
