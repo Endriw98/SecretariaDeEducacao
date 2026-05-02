@@ -1140,6 +1140,30 @@ function applyTheme(primaryColor, accentColor) {
   showNotification('Sucesso!', 'Tema aplicado com sucesso', 'success', 2000);
 }
 
+function hexToRgb(hex) {
+  const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+  return result ? {
+      r: parseInt(result[1], 16),
+      g: parseInt(result[2], 16),
+      b: parseInt(result[3], 16)
+  } : null;
+}
+
+function generateDarkBg(hex) {
+    const rgb = hexToRgb(hex);
+    if (!rgb) return 'rgb(26, 26, 46)';
+    // Reduzir luminosidade para criar fundo escuro
+    return `rgb(${Math.max(rgb.r * 0.15, 15)}, ${Math.max(rgb.g * 0.15, 15)}, ${Math.max(rgb.b * 0.15, 15)})`;
+}
+
+function generateDarkSurface(hex) {
+    const rgb = hexToRgb(hex);
+    if (!rgb) return 'rgb(22, 33, 62)';
+    // Superfície levemente mais clara que o fundo
+    return `rgb(${Math.max(rgb.r * 0.25, 20)}, ${Math.max(rgb.g * 0.25, 20)}, ${Math.max(rgb.b * 0.25, 20)})`;
+}
+
+
 function hexToHsl(hex) {
   const r = parseInt(hex.slice(1, 3), 16) / 255;
   const g = parseInt(hex.slice(3, 5), 16) / 255;
@@ -1164,6 +1188,127 @@ function hexToHsl(hex) {
   return `hsl(${Math.round(h * 360)}, ${Math.round(s * 100)}%, ${Math.round(l * 100)}%)`;
 }
 
+
+function applyTheme(primaryColor, accentColor) {
+            // Remover estilo anterior se existir
+            const oldStyle = document.getElementById('theme-style');
+            if (oldStyle) oldStyle.remove();
+
+            // Gerar cores escuras a partir da cor primária
+            const darkBg = generateDarkBg(primaryColor);
+            const darkSurface = generateDarkSurface(primaryColor);
+
+            // Aplicar cores ao sidebar (gradiente)
+            const sidebar = document.getElementById('sidebar');
+            if (sidebar) {
+                sidebar.style.background = `linear-gradient(180deg, ${primaryColor} 0%, ${accentColor} 100%)`;
+            }
+
+            // Aplicar tema ao mobile menu
+            const mobileMenu = document.getElementById('mobileMenu');
+            if (mobileMenu) {
+                const mobileNav = mobileMenu.querySelector('.sidebar-gradient');
+                if (mobileNav) {
+                    mobileNav.style.background = `linear-gradient(180deg, ${primaryColor} 0%, ${accentColor} 100%)`;
+                }
+            }
+
+            // Criar novo stylesheet com o tema
+            const styleSheet = document.createElement('style');
+            styleSheet.id = 'theme-style';
+            styleSheet.textContent = `
+        /* Tema claro - Botões primários */
+        button.bg-blue-600 { background-color: ${primaryColor} !important; }
+        button.bg-blue-600:hover { opacity: 0.9 !important; }
+        button.hover\\:bg-blue-700:hover { background-color: ${primaryColor} !important; opacity: 0.85 !important; }
+        
+        /* Tema claro - Cores de texto */
+        .text-blue-600 { color: ${primaryColor} !important; }
+        .text-blue-700 { color: ${primaryColor} !important; }
+        
+        /* Tema claro - Bordas */
+        .border-blue-600 { border-color: ${primaryColor} !important; }
+        .border-blue-300 { border-color: ${primaryColor}80 !important; }
+        
+        /* Tema claro - Backgrounds claros */
+        .bg-blue-50 { background-color: ${primaryColor}15 !important; }
+        .border-blue-200 { border-color: ${primaryColor}30 !important; }
+        
+        /* Tema claro - Focus states */
+        input:focus, select:focus, textarea:focus {
+          border-color: ${primaryColor} !important;
+          box-shadow: 0 0 0 3px ${primaryColor}30 !important;
+        }
+        
+        /* Tema claro - Links e elementos interativos */
+        a.text-blue-600:hover { color: ${primaryColor} !important; }
+        button.text-blue-600 { color: ${primaryColor} !important; }
+        
+        /* Tema escuro - Fundo principal */
+        .dark body, .dark .center-content { background: ${darkBg} !important; }
+        .dark .top-bar { background: ${darkSurface} !important; }
+        
+        /* Tema escuro - Cards e superfícies */
+        .dark .stat-card, .dark .school-card, .dark .form-card { background: ${darkSurface} !important; }
+        .dark .bg-white { background: ${darkSurface} !important; }
+        .dark .bg-gray-50 { background: ${darkBg} !important; }
+        
+        /* Tema escuro - Botões primários no modo escuro */
+        .dark button.bg-blue-600 { background-color: ${primaryColor} !important; }
+        .dark button.hover\\:bg-blue-700:hover { background-color: ${primaryColor} !important; opacity: 0.85 !important; }
+        
+        /* Tema escuro - Cores de texto */
+        .dark .text-blue-600 { color: ${primaryColor} !important; }
+        .dark .text-blue-700 { color: ${primaryColor} !important; }
+        .dark .border-blue-600 { border-color: ${primaryColor} !important; }
+        
+        /* Tema escuro - Inputs */
+        .dark input:focus, .dark select:focus, .dark textarea:focus {
+          border-color: ${primaryColor} !important;
+          box-shadow: 0 0 0 3px ${primaryColor}30 !important;
+        }
+        
+        /* Tema escuro - Sidebar gradiente */
+        .dark .sidebar-gradient { background: linear-gradient(180deg, ${primaryColor} 0%, ${accentColor} 100%) !important; }
+      `;
+            document.head.appendChild(styleSheet);
+
+            // Se estiver em modo escuro, aplicar as cores imediatamente
+            if (darkMode) {
+                const body = document.body;
+                const topBar = document.querySelector('.top-bar');
+                if (body) body.style.background = darkBg;
+                if (topBar) topBar.style.background = darkSurface;
+            }
+
+            showNotification('Sucesso!', 'Tema aplicado com sucesso', 'success', 2000);
+        }
+
+function hexToHsl(hex) {
+            const r = parseInt(hex.slice(1, 3), 16) / 255;
+            const g = parseInt(hex.slice(3, 5), 16) / 255;
+            const b = parseInt(hex.slice(5, 7), 16) / 255;
+
+            const max = Math.max(r, g, b);
+            const min = Math.min(r, g, b);
+            let h = 0, s = 0;
+            const l = (max + min) / 2;
+
+            if (max !== min) {
+                const d = max - min;
+                s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+
+                switch (max) {
+                    case r: h = ((g - b) / d + (g < b ? 6 : 0)) / 6; break;
+                    case g: h = ((b - r) / d + 2) / 6; break;
+                    case b: h = ((r - g) / d + 4) / 6; break;
+                }
+            }
+
+            return `hsl(${Math.round(h * 360)}, ${Math.round(s * 100)}%, ${Math.round(l * 100)}%)`;
+        }
+
+
 // Fechar painel ao clicar fora
 document.addEventListener('click', function (event) {
   const userPanel = document.getElementById('userPanel');
@@ -1187,4 +1332,8 @@ if (document.readyState === 'loading') {
   lucide.createIcons();
   showNotification('Bem-vindo!', 'Dashboard carregado com sucesso', 'success', 3000);
 }
+
+
+
+
 
