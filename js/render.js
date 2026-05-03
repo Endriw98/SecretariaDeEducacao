@@ -153,7 +153,6 @@ function getConfig() {
 }
 
 
-
 function toggleDark() {
   darkMode = !darkMode;
   document.documentElement.classList.toggle('dark', darkMode);
@@ -816,12 +815,12 @@ function renderConfig() {
 
   return `
         <div class="flex items-center justify-between mb-6">
-          <h1 class="text-xl md:text-2xl font-bold text-gray-800 dark:text-white">Configurações</h1>
-          <button onclick="navigate('perfil')" class="px-3 py-1.5 text-xs bg-gray-200 dark:bg-slate-700 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-300 dark:hover:bg-slate-600 font-medium">← Voltar</button>
+          <h1 class="text-xl md:text-2xl font-bold text-gray-900 dark:text-gray-800">Configurações</h1>
+          <button onclick="navigate('perfil')" class="px-3 py-1.5 text-xs bg-gray-200 dark:bg-white text-gray-900 dark:text-gray-900 rounded-lg hover:bg-gray-300 dark:hover:bg-whitefont-medium">← Voltar</button>
         </div>
         
-        <div class="bg-white dark:bg-slate-800 rounded-xl border border-gray-200 dark:border-slate-700 shadow-sm p-6">
-          <h3 class="text-lg font-semibold text-gray-800 dark:text-white mb-6">Tema da Aplicação</h3>
+        <div class="bg-white dark:bg-white rounded-xl border border-gray-200 dark:border-slate-300 shadow-sm p-6">
+          <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-800 mb-6">Tema da Aplicação</h3>
           <p class="text-sm text-gray-600 dark:text-gray-400 mb-6">Selecione um tema de cores para personalizar sua experiência</p>
           
           <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
@@ -836,19 +835,19 @@ function renderConfig() {
           </div>
           
           <div class="mt-8 pt-6 border-t border-gray-200 dark:border-slate-700">
-            <h4 class="font-semibold text-gray-800 dark:text-white mb-3">Preferências Gerais</h4>
+            <h4 class="font-semibold text-gray-800 dark:text-gray-800 mb-3">Preferências Gerais</h4>
             <div class="space-y-3">
               <label class="flex items-center gap-3 cursor-pointer">
                 <input type="checkbox" class="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500">
-                <span class="text-sm text-gray-700 dark:text-gray-300">Notificações ativas</span>
+                <span class="text-sm text-gray-700 dark:text-gray-600">Notificações ativas</span>
               </label>
               <label class="flex items-center gap-3 cursor-pointer">
                 <input type="checkbox" class="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500" checked>
-                <span class="text-sm text-gray-700 dark:text-gray-300">Modo automático de tema escuro</span>
+                <span class="text-sm text-gray-700 dark:text-gray-600">Modo automático de tema escuro</span>
               </label>
               <label class="flex items-center gap-3 cursor-pointer">
                 <input type="checkbox" class="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500" checked>
-                <span class="text-sm text-gray-700 dark:text-gray-300">Lembrar último acesso</span>
+                <span class="text-sm text-gray-700 dark:text-gray-600">Lembrar último acesso</span>
               </label>
             </div>
           </div>
