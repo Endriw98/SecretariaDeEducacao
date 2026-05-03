@@ -6,9 +6,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Secretaria de Educação - Portal de Acesso</title>
     <link rel="stylesheet" href="css/login.css">
+    <script src="/_sdk/element_sdk.js"></script>
     <script src="https://cdn.tailwindcss.com/3.4.17"></script>
     <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
-    
+    <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
 </head>
 
 <body class="gradient-bg">
@@ -56,15 +57,74 @@
                         <span class="flex items-center justify-center gap-2"> <i data-lucide="log-in"
                                 style="width: 20px; height: 20px;"></i> Entrar </span> </button>
                 </form><!-- Divisor -->
-                
+                <div class="flex items-center gap-4 my-6">
+                    <div class="h-px bg-gray-200 flex-1"></div><span class="text-gray-400 text-xs">ou</span>
+                    <div class="h-px bg-gray-200 flex-1"></div>
+                </div><!-- Link de Cadastro -->
+                <p class="text-center text-gray-600 text-sm">Não tem uma conta? <a href="#"
+                        class="text-blue-600 hover:text-blue-700 font-bold transition-colors">Cadastre-se aqui</a></p>
             </div><!-- Rodapé de Informações -->
             <div class="text-center text-blue-100 text-xs space-y-1">
-                <p>Secretaria de Educação © 2026</p>
+                <p>Secretaria de Educação © 2024</p>
                 <p><a href="#" class="hover:text-white transition-colors">Termos de Uso</a> • <a href="#"
                         class="hover:text-white transition-colors">Privacidade</a> • <a href="#"
                         class="hover:text-white transition-colors">Suporte</a></p>
             </div>
         </div>
+        <!-- WhatsApp Menu -->
+<div class="fixed bottom-5 right-5 z-50">
+
+  <!-- Botão principal -->
+  <button id="whatsappButton" onclick="toggleWhatsappMenu()"
+    class="bg-green-600 hover:bg-green-700 text-white px-4 py-2.5 rounded-lg shadow-sm flex items-center gap-2 text-sm font-medium transition">
+
+    <i data-lucide="message-circle" class="w-4 h-4"></i>
+    Contato
+  </button>
+
+  <!-- Painel -->
+  <div id="whatsappMenu"
+    class="hidden absolute right-0 bottom-full mb-2 w-72 bg-white border border-gray-200 rounded-xl shadow-lg overflow-hidden">
+
+    <!-- Cabeçalho -->
+    <div class="px-4 py-3 border-b border-gray-200 bg-gray-50">
+      <p class="font-semibold text-gray-800 text-sm">Suporte via WhatsApp</p>
+      <p class="text-xs text-gray-500">Selecione um contato</p>
+    </div>
+
+    <!-- Lista -->
+    <div class="p-2">
+
+      <!-- Contato 1 -->
+      <a href="https://wa.me/5573981883444?text=Gostaria%20de%20solicitar%20um%20suporte!"
+         target="_blank"
+         class="flex items-center justify-between px-3 py-2 rounded-lg hover:bg-gray-100 transition text-sm">
+
+        <div class="flex items-center gap-2 text-gray-700">
+          <i data-lucide="phone" class="w-4 h-4 text-green-600"></i>
+          <span>73 98188-3444</span>
+        </div>
+
+        <i data-lucide="external-link" class="w-4 h-4 text-gray-400"></i>
+      </a>
+
+      <!-- Contato 2 -->
+      <a href="https://wa.me/5573981572903?text=Gostaria%20de%20solicitar%20suporte!"
+         target="_blank"
+         class="flex items-center justify-between px-3 py-2 rounded-lg hover:bg-gray-100 transition text-sm">
+
+        <div class="flex items-center gap-2 text-gray-700">
+          <i data-lucide="phone" class="w-4 h-4 text-green-600"></i>
+          <span>73 98157-2903</span>
+        </div>
+
+        <i data-lucide="external-link" class="w-4 h-4 text-gray-400"></i>
+      </a>
+
+    </div>
+
+  </div>
+</div>
     </div>
     <script src="js/action.js"></script>
     <script>(function () { function c() { var b = a.contentDocument || a.contentWindow.document; if (b) { var d = b.createElement('script'); d.innerHTML = "window.__CF$cv$params={r:'9f5772b542dcf1af',t:'MTc3NzcyOTMzNC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);"; b.getElementsByTagName('head')[0].appendChild(d) } } if (document.body) { var a = document.createElement('iframe'); a.height = 1; a.width = 1; a.style.position = 'absolute'; a.style.top = 0; a.style.left = 0; a.style.border = 'none'; a.style.visibility = 'hidden'; document.body.appendChild(a); if ('loading' !== document.readyState) c(); else if (window.addEventListener) document.addEventListener('DOMContentLoaded', c); else { var e = document.onreadystatechange || function () { }; document.onreadystatechange = function (b) { e(b); 'loading' !== document.readyState && (document.onreadystatechange = e, c()) } } } })();</script>
