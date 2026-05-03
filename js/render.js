@@ -10,7 +10,6 @@ window.addEventListener('DOMContentLoaded', () => {
   initNotifications();
   navigate('inicio'); 
   lucide.createIcons();
-  showNotification('Bem-vindo!', 'Você entrou no sistema com sucesso.', 'success', 3000);
 });
 function initNotifications() {
   if (!document.getElementById('notifications-container')) {
