@@ -147,7 +147,9 @@ const defaultConfig = {
   primary_action_color: '#2563eb'
 };
 
-
+function getConfig() {
+  return window.elementSdk?.config || defaultConfig;
+}
 
 
 function toggleDark() {
@@ -807,7 +809,12 @@ function renderConfig() {
     { name: 'Verde', gradient: 'from-green-500 to-emerald-600', bg: '#22c55e', accent: '#10b981' },
     { name: 'Vermelho', gradient: 'from-red-500 to-orange-600', bg: '#ef4444', accent: '#f97316' },
     { name: 'Ciano', gradient: 'from-cyan-500 to-blue-600', bg: '#06b6d4', accent: '#0ea5e9' },
-    { name: 'Rosa', gradient: 'from-pink-500 to-rose-600', bg: '#ec4899', accent: '#e11d48' }
+    { name: 'Rosa', gradient: 'from-pink-500 to-rose-600', bg: '#ec4899', accent: '#e11d48' }, { name: 'Amarelo', gradient: 'from-yellow-500 to-amber-600', bg: '#f59e0b', accent: '#d97706' },
+      { name: 'Indigo', gradient: 'from-indigo-500 to-blue-600', bg: '#6366f1', accent: '#4f46e5' }, { name: 'Laranja', gradient: 'from-orange-500 to-red-600', bg: '#f97316', accent: '#ef4444' },
+     { name: 'Verde Limão', gradient: 'from-lime-500 to-green-600', bg: '#84cc16', accent: '#65a30d' }, { name: 'Fúcsia', gradient: 'from-fuchsia-500 to-pink-600', bg: '#d946ef', accent: '#ec4899' },
+      { name: 'Cinza', gradient: 'from-gray-500 to-slate-600', bg: '#6b7280', accent: '#4b5563' }, { name: 'Azul Claro', gradient: 'from-blue-300 to-blue-500', bg: '#60a5fa', accent: '#3b82f6' }, { name: 'Rosa Claro', gradient: 'from-pink-300 to-pink-500', bg: '#fda4af', accent: '#ec4899' }, { name: 'Verde Claro', gradient: 'from-green-300 to-green-500', bg: '#86efac', accent: '#22c55e' },
+       { name: 'Amarelo Claro', gradient: 'from-yellow-300 to-yellow-500', bg: '#fde68a', accent: '#f59e0b' }, { name: 'Ciano Claro', gradient: 'from-cyan-300 to-cyan-500', bg: '#67e8f9', accent: '#06b6d4' }, { name: 'Roxo Claro', gradient: 'from-purple-300 to-purple-500', bg: '#c084fc', accent: '#a855f7' }, { name: 'Laranja Claro', gradient: 'from-orange-300 to-orange-500', bg: '#fdba74', accent: '#f97316' }, { name: 'Indigo Claro', gradient: 'from-indigo-300 to-indigo-500', bg: '#a5b4fc', accent: '#6366f1' }, { name: 'Fúcsia Claro', gradient: 'from-fuchsia-300 to-fuchsia-500', bg: '#f0abfc', accent: '#d946ef' }, { name: 'Cinza Claro', gradient: 'from-gray-300 to-gray-500', bg: '#d1d5db', accent: '#6b7280' }, { name: 'Azul Escuro', gradient: 'from-blue-700 to-blue-900', bg: '#1e40af', accent: '#1e3a8a' }, { name: 'Roxo Escuro', gradient: 'from-purple-700 to-purple-900', bg: '#6b21a8', accent: '#581c87' }, { name: 'Verde Escuro', gradient: 'from-green-700 to-green-900', bg: '#15803d', accent: '#166534' }, { name: 'Vermelho Escuro', gradient: 'from-red-700 to-red-900', bg: '#b91c1c', accent: '#991b1b' }, { name: 'Ciano Escuro', gradient: 'from-cyan-700 to-cyan-900', bg: '#0891b2', accent: '#0c4a6e' }, { name: 'Rosa Escuro', gradient: 'from-pink-700 to-pink-900', bg: '#be123c', accent: '#9f1239' }, { name: 'Amarelo Escuro', gradient: 'from-yellow-700 to-yellow-900', bg: '#b45309', accent: '#78350f' }, { name: 'Indigo Escuro', gradient: 'from-indigo-700 to-indigo-900', bg: '#4338ca', accent: '#312e81' }, { name: 'Laranja Escuro', gradient: 'from-orange-700 to-orange-900', bg: '#c2410c', accent: '#9a3412' }, { name: 'Fúcsia Escuro', gradient: 'from-fuchsia-700 to-fuchsia-900', bg: '#9d174d', accent: '#831843' }, { name: 'Cinza Escuro', gradient: 'from-gray-700 to-gray-900', bg: '#374151', accent: '#1f2937' }
+
   ];
 
   return `
