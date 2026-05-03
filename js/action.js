@@ -24,3 +24,27 @@ lucide.createIcons();
       // Redireciona para a página principal
       window.location.href = 'main.html';
     });
+    let whatsappOpen = false;
+
+function toggleWhatsappMenu() {
+  const menu = document.getElementById('whatsappMenu');
+
+  whatsappOpen = !whatsappOpen;
+
+  if (menu) {
+    menu.classList.toggle('hidden', !whatsappOpen);
+  }
+}
+
+// Fechar ao clicar fora (igual notificação ideal)
+document.addEventListener('click', function (e) {
+  const menu = document.getElementById('whatsappMenu');
+  const button = document.getElementById('whatsappButton');
+
+  if (!menu || !button) return;
+
+  if (!menu.contains(e.target) && !button.contains(e.target)) {
+    menu.classList.add('hidden');
+    whatsappOpen = false;
+  }
+});
