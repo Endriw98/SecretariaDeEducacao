@@ -1,5 +1,15 @@
 let notifications = [];
 let currentPage = 'inicio';
+function saveData() {
+  localStorage.setItem('schools', JSON.stringify(schools));
+}
+
+function loadData() {
+  const data = localStorage.getItem('schools');
+  if (data) {
+    schools = JSON.parse(data);
+  }
+}
 const panel = document.getElementById('notificationPanel');
 const btnNotification = document.getElementById('btn-notication-graduation-cap');
 btnNotification.addEventListener('click', () => {
@@ -7,8 +17,15 @@ btnNotification.addEventListener('click', () => {
 });
 
 window.addEventListener('DOMContentLoaded', () => {
+  loadData();
+
+  const savedIndex = localStorage.getItem('selectedSchool');
+  if (savedIndex !== null) {
+    selectedSchool = parseInt(savedIndex);
+  }
+
   initNotifications();
-  navigate('inicio'); 
+  navigate('inicio');
   lucide.createIcons();
 });
 function initNotifications() {
@@ -182,6 +199,12 @@ function navigate(page) {
 
 function renderPage() {
   const content = document.getElementById('content');
+  if (currentPage.startsWith('school-')) {
+    const index = parseInt(currentPage.split('-')[1]);
+    content.innerHTML = school(index);
+    lucide.createIcons();
+    return;
+  }
   switch (currentPage) {
     case 'inicio': content.innerHTML = renderInicio(); break;
     case 'funcionario': content.innerHTML = renderFuncionario(); break;
@@ -198,19 +221,25 @@ function renderPage() {
   }
   lucide.createIcons();
 }
-
+function schoolremove(index) {
+  schools.splice(index, 1);
+  saveData();
+  renderPage();
+}
 function renderInicio() {
   const schoolCards = schools.map((s, i) => `
         <div class="school-card bg-white border border-gray-200 rounded-xl p-5 shadow-sm hover:shadow-md transition">
           <div class="flex justify-between items-start mb-2">
             <h3 class="font-semibold text-gray-800">${s.name}</h3>
-            <button onclick="schools.splice(${i},1);renderPage()" class="text-red-400 hover:text-red-600"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+            <button onclick="schoolremove(${i})" class="text-red-400 hover:text-red-600"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
           </div>
           <p class="text-sm text-gray-500">${s.type || 'Escola Municipal'}</p>
           <p class="text-xs text-gray-400 mt-1">${s.address || ''}</p>
+          <p class="text-xs text-gray-600 mt-3">Funcionários: ${s.funcionarios ? s.funcionarios.length : 0}</p>
           <div class="flex gap-2 mt-4">
-            <button onclick="goToFuncionarioForm('${s.name}')" class="flex-1 bg-blue-600 text-white px-3 py-2 rounded-lg text-xs font-medium hover:bg-blue-700 flex items-center justify-center gap-1"><i data-lucide="user-plus" class="w-3 h-3"></i> Novo Func.</button>
+            <button onclick="goToFuncionarioForm('${i}')" class="flex-1 bg-blue-600 text-white px-3 py-2 rounded-lg text-xs font-medium hover:bg-blue-700 flex items-center justify-center gap-1"><i data-lucide="user-plus" class="w-3 h-3"></i> Novo Func.</button>
             <button onclick="removeFuncionarios(${i})" class="flex-1 bg-red-100 text-red-600 px-3 py-2 rounded-lg text-xs font-medium hover:bg-red-200 flex items-center justify-center gap-1"><i data-lucide="user-x" class="w-3 h-3"></i> Remover</button>
+            <button onclick="navigate('school-${i}')" class="flex-1 bg-gray-100 text-gray-700 px-3 py-2 rounded-lg text-xs font-medium hover:bg-gray-200 flex items-center justify-center gap-1"><i data-lucide="eye" class="w-3 h-3"></i> Ver Detalhes</button>
           </div>
         </div>
       `).join('');
@@ -253,12 +282,84 @@ function renderInicio() {
       `;
 }
 
+
+function school(index) {
+  const school = schools[index];
+  const funcionarios = school.funcionarios || [];
+  if (!school) return '<p class="text-red-500">Escola não encontrada</p>';
+  return `        
+    <div class="flex items-center justify-between mb-6">
+      <h2 class="text-xl font-bold text-gray-800">${school.name}</h2>
+      <button onclick="navigate('inicio')" class="px-3 py-1.5 text-xs bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 font-medium">← Voltar</button>
+
+    </div>
+    <div class="bg-white rounded-xl border border-gray-200 shadow-sm p-5">
+      <p class="text-sm text-gray-500 mb-2">${school.type || 'Escola Municipal'}</p>
+      <p class="text-xs text-gray-400 mb-4">${school.address || ''}</p>
+      <h3 class="font-semibold text-gray-800 mb-3">Funcionários</h3>
+      <div class="max-h-96 overflow-y-auto">
+            <table class="w-full text-sm text-left border border-gray-200 rounded-lg overflow-hidden">
+      <thead class="bg-gray-100 text-gray-700">
+        <tr>
+          <th class="px-3 py-2">Nome</th>
+          <th class="px-3 py-2">Matrícula</th>
+          <th class="px-3 py-2">Cargo</th>
+          <th class="px-3 py-2">Status</th>
+          <th class="px-3 py-2">Lotações</th>
+          <th class="px-3 py-2">Formações</th>
+          <th class="px-3 py-2">Ações</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${funcionarios.map((f, i) => `
+          <tr class="border-t">
+            <td class="px-3 py-2">${f.nome || '-'}</td>
+            <td class="px-3 py-2">${f.matricula || '-'}</td>
+            <td class="px-3 py-2">${f.cargo || '-'}</td>
+            <td class="px-3 py-2">${f.status || '-'}</td>
+            <td class="px-3 py-2">
+              ${(f.lotacoes && f.lotacoes.length > 0)
+                ? f.lotacoes.map(l => l.cargo || '-').join(', ')
+                : '-'
+              }
+            </td>
+            <td class="px-3 py-2">
+              ${(f.formacoes && f.formacoes.length > 0)
+                ? f.formacoes.map(form => form.curso || '-').join(', ')
+                : '-'
+              }
+            </td>
+            <td class="px-3 py-2">
+              <button onclick="removeFuncionarioFromSchool(${index}, ${i})" class="bg-red-600 text-white px-3 py-1 rounded-lg text-sm font-medium hover:bg-red-700">Remover</button>
+            </td>
+          </tr>
+        `).join('')}
+      </tbody>
+    </table>
+      </div>
+    </div>
+      `;
+}
+
+function removeFuncionarioFromSchool(schoolIndex, funcionarioIndex) {
+  if (!confirm('Tem certeza que deseja remover este funcionário?')) return;
+
+ if (schools[schoolIndex]?.funcionarios) {
+    schools[schoolIndex].funcionarios.splice(funcionarioIndex, 1);
+  }
+  saveData();
+  renderPage();
+  showNotification('Sucesso', 'Funcionário removido', 'success', 2000);
+
+}
+
 function showAddSchool() { document.getElementById('addSchoolModal').classList.remove('hidden'); }
 function hideAddSchool() { document.getElementById('addSchoolModal').classList.add('hidden'); }
 function addSchool() {
   const name = document.getElementById('schoolName').value.trim();
   if (!name) { showNotification('Aviso', 'Por favor, preencha o nome da escola', 'warning'); return; }
-  schools.push({ name, type: document.getElementById('schoolType').value, address: document.getElementById('schoolAddr').value });
+  schools.push({ name, type: document.getElementById('schoolType').value, address: document.getElementById('schoolAddr').value, funcionarios: [] });
+  saveData();
   hideAddSchool();
   showNotification('Sucesso!', `Escola "${name}" cadastrada com sucesso`, 'success', 3000);
   document.getElementById('schoolName').value = '';
@@ -810,10 +911,10 @@ function renderConfig() {
     { name: 'Vermelho', gradient: 'from-red-500 to-orange-600', bg: '#ef4444', accent: '#f97316' },
     { name: 'Ciano', gradient: 'from-cyan-500 to-blue-600', bg: '#06b6d4', accent: '#0ea5e9' },
     { name: 'Rosa', gradient: 'from-pink-500 to-rose-600', bg: '#ec4899', accent: '#e11d48' }, { name: 'Amarelo', gradient: 'from-yellow-500 to-amber-600', bg: '#f59e0b', accent: '#d97706' },
-      { name: 'Indigo', gradient: 'from-indigo-500 to-blue-600', bg: '#6366f1', accent: '#4f46e5' }, { name: 'Laranja', gradient: 'from-orange-500 to-red-600', bg: '#f97316', accent: '#ef4444' },
-     { name: 'Verde Limão', gradient: 'from-lime-500 to-green-600', bg: '#84cc16', accent: '#65a30d' }, { name: 'Fúcsia', gradient: 'from-fuchsia-500 to-pink-600', bg: '#d946ef', accent: '#ec4899' },
-      { name: 'Cinza', gradient: 'from-gray-500 to-slate-600', bg: '#6b7280', accent: '#4b5563' }, { name: 'Azul Claro', gradient: 'from-blue-300 to-blue-500', bg: '#60a5fa', accent: '#3b82f6' }, { name: 'Rosa Claro', gradient: 'from-pink-300 to-pink-500', bg: '#fda4af', accent: '#ec4899' }, { name: 'Verde Claro', gradient: 'from-green-300 to-green-500', bg: '#86efac', accent: '#22c55e' },
-       { name: 'Amarelo Claro', gradient: 'from-yellow-300 to-yellow-500', bg: '#fde68a', accent: '#f59e0b' }, { name: 'Ciano Claro', gradient: 'from-cyan-300 to-cyan-500', bg: '#67e8f9', accent: '#06b6d4' }, { name: 'Roxo Claro', gradient: 'from-purple-300 to-purple-500', bg: '#c084fc', accent: '#a855f7' }, { name: 'Laranja Claro', gradient: 'from-orange-300 to-orange-500', bg: '#fdba74', accent: '#f97316' }, { name: 'Indigo Claro', gradient: 'from-indigo-300 to-indigo-500', bg: '#a5b4fc', accent: '#6366f1' }, { name: 'Fúcsia Claro', gradient: 'from-fuchsia-300 to-fuchsia-500', bg: '#f0abfc', accent: '#d946ef' }, { name: 'Cinza Claro', gradient: 'from-gray-300 to-gray-500', bg: '#d1d5db', accent: '#6b7280' }, { name: 'Azul Escuro', gradient: 'from-blue-700 to-blue-900', bg: '#1e40af', accent: '#1e3a8a' }, { name: 'Roxo Escuro', gradient: 'from-purple-700 to-purple-900', bg: '#6b21a8', accent: '#581c87' }, { name: 'Verde Escuro', gradient: 'from-green-700 to-green-900', bg: '#15803d', accent: '#166534' }, { name: 'Vermelho Escuro', gradient: 'from-red-700 to-red-900', bg: '#b91c1c', accent: '#991b1b' }, { name: 'Ciano Escuro', gradient: 'from-cyan-700 to-cyan-900', bg: '#0891b2', accent: '#0c4a6e' }, { name: 'Rosa Escuro', gradient: 'from-pink-700 to-pink-900', bg: '#be123c', accent: '#9f1239' }, { name: 'Amarelo Escuro', gradient: 'from-yellow-700 to-yellow-900', bg: '#b45309', accent: '#78350f' }, { name: 'Indigo Escuro', gradient: 'from-indigo-700 to-indigo-900', bg: '#4338ca', accent: '#312e81' }, { name: 'Laranja Escuro', gradient: 'from-orange-700 to-orange-900', bg: '#c2410c', accent: '#9a3412' }, { name: 'Fúcsia Escuro', gradient: 'from-fuchsia-700 to-fuchsia-900', bg: '#9d174d', accent: '#831843' }, { name: 'Cinza Escuro', gradient: 'from-gray-700 to-gray-900', bg: '#374151', accent: '#1f2937' }
+    { name: 'Indigo', gradient: 'from-indigo-500 to-blue-600', bg: '#6366f1', accent: '#4f46e5' }, { name: 'Laranja', gradient: 'from-orange-500 to-red-600', bg: '#f97316', accent: '#ef4444' },
+    { name: 'Verde Limão', gradient: 'from-lime-500 to-green-600', bg: '#84cc16', accent: '#65a30d' }, { name: 'Fúcsia', gradient: 'from-fuchsia-500 to-pink-600', bg: '#d946ef', accent: '#ec4899' },
+    { name: 'Cinza', gradient: 'from-gray-500 to-slate-600', bg: '#6b7280', accent: '#4b5563' }, { name: 'Azul Claro', gradient: 'from-blue-300 to-blue-500', bg: '#60a5fa', accent: '#3b82f6' }, { name: 'Rosa Claro', gradient: 'from-pink-300 to-pink-500', bg: '#fda4af', accent: '#ec4899' }, { name: 'Verde Claro', gradient: 'from-green-300 to-green-500', bg: '#86efac', accent: '#22c55e' },
+    { name: 'Amarelo Claro', gradient: 'from-yellow-300 to-yellow-500', bg: '#fde68a', accent: '#f59e0b' }, { name: 'Ciano Claro', gradient: 'from-cyan-300 to-cyan-500', bg: '#67e8f9', accent: '#06b6d4' }, { name: 'Roxo Claro', gradient: 'from-purple-300 to-purple-500', bg: '#c084fc', accent: '#a855f7' }, { name: 'Laranja Claro', gradient: 'from-orange-300 to-orange-500', bg: '#fdba74', accent: '#f97316' }, { name: 'Indigo Claro', gradient: 'from-indigo-300 to-indigo-500', bg: '#a5b4fc', accent: '#6366f1' }, { name: 'Fúcsia Claro', gradient: 'from-fuchsia-300 to-fuchsia-500', bg: '#f0abfc', accent: '#d946ef' }, { name: 'Cinza Claro', gradient: 'from-gray-300 to-gray-500', bg: '#d1d5db', accent: '#6b7280' }, { name: 'Azul Escuro', gradient: 'from-blue-700 to-blue-900', bg: '#1e40af', accent: '#1e3a8a' }, { name: 'Roxo Escuro', gradient: 'from-purple-700 to-purple-900', bg: '#6b21a8', accent: '#581c87' }, { name: 'Verde Escuro', gradient: 'from-green-700 to-green-900', bg: '#15803d', accent: '#166534' }, { name: 'Vermelho Escuro', gradient: 'from-red-700 to-red-900', bg: '#b91c1c', accent: '#991b1b' }, { name: 'Ciano Escuro', gradient: 'from-cyan-700 to-cyan-900', bg: '#0891b2', accent: '#0c4a6e' }, { name: 'Rosa Escuro', gradient: 'from-pink-700 to-pink-900', bg: '#be123c', accent: '#9f1239' }, { name: 'Amarelo Escuro', gradient: 'from-yellow-700 to-yellow-900', bg: '#b45309', accent: '#78350f' }, { name: 'Indigo Escuro', gradient: 'from-indigo-700 to-indigo-900', bg: '#4338ca', accent: '#312e81' }, { name: 'Laranja Escuro', gradient: 'from-orange-700 to-orange-900', bg: '#c2410c', accent: '#9a3412' }, { name: 'Fúcsia Escuro', gradient: 'from-fuchsia-700 to-fuchsia-900', bg: '#9d174d', accent: '#831843' }, { name: 'Cinza Escuro', gradient: 'from-gray-700 to-gray-900', bg: '#374151', accent: '#1f2937' }
 
   ];
 
@@ -938,7 +1039,17 @@ function adicionarLotacao() {
   document.getElementById('prof_status').value = '';
   document.getElementById('prof_secretaria_origem').value = '';
   document.getElementById('prof_secretaria_atual').value = '';
-  renderPage();
+  renderLotacoes();
+}
+function renderLotacoes() {
+  const container = document.getElementById('lotacoes-list');
+
+  container.innerHTML = lotacoes.map((lot, i) => `
+    <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-3">
+      <p class="text-sm font-semibold">Lotação ${i + 1}</p>
+      <p class="text-xs">Cargo: ${lot.cargo}</p>
+    </div>
+  `).join('');
 }
 
 function removeLotacao(i) {
@@ -971,15 +1082,48 @@ function removeFormacao(i) {
 }
 
 function salvarFuncionario() {
-  const nome = document.getElementById('nome').value;
-  if (!nome) { showNotification('Aviso', 'Nome é obrigatório!', 'warning'); return; }
+
+  if (selectedSchool === null || !schools[selectedSchool]) {
+    showNotification('Erro', 'Nenhuma escola selecionada', 'error');
+    return;
+  }
+
+  // garante array
+  if (!schools[selectedSchool].funcionarios) {
+    schools[selectedSchool].funcionarios = [];
+  }
+  alert('Salvando funcionário...\n' + 'escola selecionada: ' + schools[selectedSchool].name);
+  const funcionario = {
+    nome: document.getElementById('nome').value,
+    cpf: document.getElementById('cpf').value,
+    matricula: document.getElementById('matricula').value,
+
+
+
+    // 👇 AQUI estava faltando
+    lotacoes: [...lotacoes],
+    formacoes: [...formacoes]
+  };
+
+
+  schools[selectedSchool].funcionarios.push(funcionario);
+
+  saveData();
+
+  // limpar dados temporários
+  lotacoes = [];
+  formacoes = [];
+
   showNotification('Sucesso!', 'Funcionário salvo com sucesso!', 'success', 3000);
-  setTimeout(() => navigate('funcionario'), 1500);
+
+  setTimeout(() => navigate('inicio'), 1500);
 }
 
-function goToFuncionarioForm(schoolName) {
-  selectedSchool = schoolName;
+function goToFuncionarioForm(index) {
+  selectedSchool = index;
+  localStorage.setItem('selectedSchool', index);
   navigate('novo-funcionario');
+  
 }
 
 function removeFuncionarios(schoolIndex) {
@@ -1127,24 +1271,24 @@ function applyTheme(primaryColor, accentColor) {
 function hexToRgb(hex) {
   const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
   return result ? {
-      r: parseInt(result[1], 16),
-      g: parseInt(result[2], 16),
-      b: parseInt(result[3], 16)
+    r: parseInt(result[1], 16),
+    g: parseInt(result[2], 16),
+    b: parseInt(result[3], 16)
   } : null;
 }
 
 function generateDarkBg(hex) {
-    const rgb = hexToRgb(hex);
-    if (!rgb) return 'rgb(26, 26, 46)';
-    // Reduzir luminosidade para criar fundo escuro
-    return `rgb(${Math.max(rgb.r * 0.15, 15)}, ${Math.max(rgb.g * 0.15, 15)}, ${Math.max(rgb.b * 0.15, 15)})`;
+  const rgb = hexToRgb(hex);
+  if (!rgb) return 'rgb(26, 26, 46)';
+  // Reduzir luminosidade para criar fundo escuro
+  return `rgb(${Math.max(rgb.r * 0.15, 15)}, ${Math.max(rgb.g * 0.15, 15)}, ${Math.max(rgb.b * 0.15, 15)})`;
 }
 
 function generateDarkSurface(hex) {
-    const rgb = hexToRgb(hex);
-    if (!rgb) return 'rgb(22, 33, 62)';
-    // Superfície levemente mais clara que o fundo
-    return `rgb(${Math.max(rgb.r * 0.25, 20)}, ${Math.max(rgb.g * 0.25, 20)}, ${Math.max(rgb.b * 0.25, 20)})`;
+  const rgb = hexToRgb(hex);
+  if (!rgb) return 'rgb(22, 33, 62)';
+  // Superfície levemente mais clara que o fundo
+  return `rgb(${Math.max(rgb.r * 0.25, 20)}, ${Math.max(rgb.g * 0.25, 20)}, ${Math.max(rgb.b * 0.25, 20)})`;
 }
 
 
@@ -1174,33 +1318,33 @@ function hexToHsl(hex) {
 
 
 function applyTheme(primaryColor, accentColor) {
-            // Remover estilo anterior se existir
-            const oldStyle = document.getElementById('theme-style');
-            if (oldStyle) oldStyle.remove();
+  // Remover estilo anterior se existir
+  const oldStyle = document.getElementById('theme-style');
+  if (oldStyle) oldStyle.remove();
 
-            // Gerar cores escuras a partir da cor primária
-            const darkBg = generateDarkBg(primaryColor);
-            const darkSurface = generateDarkSurface(primaryColor);
+  // Gerar cores escuras a partir da cor primária
+  const darkBg = generateDarkBg(primaryColor);
+  const darkSurface = generateDarkSurface(primaryColor);
 
-            // Aplicar cores ao sidebar (gradiente)
-            const sidebar = document.getElementById('sidebar');
-            if (sidebar) {
-                sidebar.style.background = `linear-gradient(180deg, ${primaryColor} 0%, ${accentColor} 100%)`;
-            }
+  // Aplicar cores ao sidebar (gradiente)
+  const sidebar = document.getElementById('sidebar');
+  if (sidebar) {
+    sidebar.style.background = `linear-gradient(180deg, ${primaryColor} 0%, ${accentColor} 100%)`;
+  }
 
-            // Aplicar tema ao mobile menu
-            const mobileMenu = document.getElementById('mobileMenu');
-            if (mobileMenu) {
-                const mobileNav = mobileMenu.querySelector('.sidebar-gradient');
-                if (mobileNav) {
-                    mobileNav.style.background = `linear-gradient(180deg, ${primaryColor} 0%, ${accentColor} 100%)`;
-                }
-            }
+  // Aplicar tema ao mobile menu
+  const mobileMenu = document.getElementById('mobileMenu');
+  if (mobileMenu) {
+    const mobileNav = mobileMenu.querySelector('.sidebar-gradient');
+    if (mobileNav) {
+      mobileNav.style.background = `linear-gradient(180deg, ${primaryColor} 0%, ${accentColor} 100%)`;
+    }
+  }
 
-            // Criar novo stylesheet com o tema
-            const styleSheet = document.createElement('style');
-            styleSheet.id = 'theme-style';
-            styleSheet.textContent = `
+  // Criar novo stylesheet com o tema
+  const styleSheet = document.createElement('style');
+  styleSheet.id = 'theme-style';
+  styleSheet.textContent = `
         /* Tema claro - Botões primários */
         button.bg-blue-600 { background-color: ${primaryColor} !important; }
         button.bg-blue-600:hover { opacity: 0.9 !important; }
@@ -1255,42 +1399,42 @@ function applyTheme(primaryColor, accentColor) {
         /* Tema escuro - Sidebar gradiente */
         .dark .sidebar-gradient { background: linear-gradient(180deg, ${primaryColor} 0%, ${accentColor} 100%) !important; }
       `;
-            document.head.appendChild(styleSheet);
+  document.head.appendChild(styleSheet);
 
-            // Se estiver em modo escuro, aplicar as cores imediatamente
-            if (darkMode) {
-                const body = document.body;
-                const topBar = document.querySelector('.top-bar');
-                if (body) body.style.background = darkBg;
-                if (topBar) topBar.style.background = darkSurface;
-            }
+  // Se estiver em modo escuro, aplicar as cores imediatamente
+  if (darkMode) {
+    const body = document.body;
+    const topBar = document.querySelector('.top-bar');
+    if (body) body.style.background = darkBg;
+    if (topBar) topBar.style.background = darkSurface;
+  }
 
-            showNotification('Sucesso!', 'Tema aplicado com sucesso', 'success', 2000);
-        }
+  showNotification('Sucesso!', 'Tema aplicado com sucesso', 'success', 2000);
+}
 
 function hexToHsl(hex) {
-            const r = parseInt(hex.slice(1, 3), 16) / 255;
-            const g = parseInt(hex.slice(3, 5), 16) / 255;
-            const b = parseInt(hex.slice(5, 7), 16) / 255;
+  const r = parseInt(hex.slice(1, 3), 16) / 255;
+  const g = parseInt(hex.slice(3, 5), 16) / 255;
+  const b = parseInt(hex.slice(5, 7), 16) / 255;
 
-            const max = Math.max(r, g, b);
-            const min = Math.min(r, g, b);
-            let h = 0, s = 0;
-            const l = (max + min) / 2;
+  const max = Math.max(r, g, b);
+  const min = Math.min(r, g, b);
+  let h = 0, s = 0;
+  const l = (max + min) / 2;
 
-            if (max !== min) {
-                const d = max - min;
-                s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+  if (max !== min) {
+    const d = max - min;
+    s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
 
-                switch (max) {
-                    case r: h = ((g - b) / d + (g < b ? 6 : 0)) / 6; break;
-                    case g: h = ((b - r) / d + 2) / 6; break;
-                    case b: h = ((r - g) / d + 4) / 6; break;
-                }
-            }
+    switch (max) {
+      case r: h = ((g - b) / d + (g < b ? 6 : 0)) / 6; break;
+      case g: h = ((b - r) / d + 2) / 6; break;
+      case b: h = ((r - g) / d + 4) / 6; break;
+    }
+  }
 
-            return `hsl(${Math.round(h * 360)}, ${Math.round(s * 100)}%, ${Math.round(l * 100)}%)`;
-        }
+  return `hsl(${Math.round(h * 360)}, ${Math.round(s * 100)}%, ${Math.round(l * 100)}%)`;
+}
 
 
 // Fechar painel ao clicar fora
